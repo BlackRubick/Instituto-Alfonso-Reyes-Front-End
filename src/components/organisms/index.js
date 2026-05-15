@@ -1,0 +1,11 @@
+export { Navbar } from './Navbar';
+export { Hero } from './Hero';
+export { WelcomeSection } from './WelcomeSection';
+export { QuickLinksSection } from './QuickLinksSection';
+export { OfertaEducativaSection } from './OfertaEducativaSection';
+export { InstalacionesSection } from './InstalacionesSection';
+export { StatsSection } from './StatsSection';
+export { ContactForm } from './ContactForm';
+export { ContactPreview } from './ContactPreview';
+export { FAQSection } from './FAQSection';
+export { Footer } from './Footer';
