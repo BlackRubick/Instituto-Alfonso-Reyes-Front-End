@@ -8,4 +8,5 @@ export { StatsSection } from './StatsSection';
 export { ContactForm } from './ContactForm';
 export { ContactPreview } from './ContactPreview';
 export { FAQSection } from './FAQSection';
+export { RoleLoginForm } from './RoleLoginForm';
 export { Footer } from './Footer';
