@@ -14,12 +14,12 @@ const router = Router();
 // Todos los endpoints de pagos requieren token válido
 router.use(authenticateToken);
 
-// Solo el rol de 'contador' o 'admin' pueden gestionar los pagos
-router.get('/', authorizeRoles('contador', 'admin'), obtenerPagos);
-router.get('/stats', authorizeRoles('contador', 'admin'), obtenerEstadisticas);
-router.post('/', authorizeRoles('contador', 'admin'), registrarPago);
-router.get('/:id', authorizeRoles('contador', 'admin'), obtenerPagoPorId);
-router.put('/:id', authorizeRoles('contador', 'admin'), editarPago);
-router.put('/:id/cancelar', authorizeRoles('contador', 'admin'), cancelarPago);
+// Permitir que roles de gestión financiera y dirección puedan acceder
+router.get('/', authorizeRoles('contador', 'admin', 'jefe', 'director'), obtenerPagos);
+router.get('/stats', authorizeRoles('contador', 'admin', 'jefe', 'director'), obtenerEstadisticas);
+router.post('/', authorizeRoles('contador', 'admin', 'jefe', 'director'), registrarPago);
+router.get('/:id', authorizeRoles('contador', 'admin', 'jefe', 'director'), obtenerPagoPorId);
+router.put('/:id', authorizeRoles('contador', 'admin', 'jefe', 'director'), editarPago);
+router.put('/:id/cancelar', authorizeRoles('contador', 'admin', 'jefe', 'director'), cancelarPago);
 
 export default router;

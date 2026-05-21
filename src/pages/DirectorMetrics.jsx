@@ -71,18 +71,23 @@ export default function DirectorMetrics() {
     navigate('/login_docentes', { replace: true });
   }
 
-  const total = metrics ? CATEGORIAS.reduce((s, c) => s + (metrics[c.key] || 0), 0) : 0;
+  const safeVal = (k) => {
+    const v = metrics && typeof metrics[k] !== 'undefined' ? metrics[k] : 0;
+    return Number(v) || 0;
+  };
+
+  const total = metrics ? CATEGORIAS.reduce((s, c) => s + safeVal(c.key), 0) : 0;
 
   const barData = metrics ? CATEGORIAS.map(c => ({
     name: c.label,
-    value: metrics[c.key] || 0,
+    value: safeVal(c.key),
   })) : [];
 
   const pieData = metrics ? CATEGORIAS
-    .map((c, i) => ({ name: c.label, value: metrics[c.key] || 0, color: COLORS[i] }))
+    .map((c, i) => ({ name: c.label, value: safeVal(c.key), color: COLORS[i] }))
     .filter(d => d.value > 0) : [];
 
-  const pct = v => total > 0 ? ((v / total) * 100).toFixed(1) : '0.0';
+  const pct = v => total > 0 ? ((Number(v) / total) * 100).toFixed(1) : '0.0';
 
   return (
     <div className="min-h-screen bg-neutral-light">

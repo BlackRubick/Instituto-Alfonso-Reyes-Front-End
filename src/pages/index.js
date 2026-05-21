@@ -13,3 +13,4 @@ export { AdminUsuarios } from './AdminUsuarios';
 export { default as JefeMetrics } from './JefeMetrics';
 export { default as DirectorMetrics } from './DirectorMetrics';
 export { default as Contador } from './Contador';
+export { default as Asesor } from './Asesor';

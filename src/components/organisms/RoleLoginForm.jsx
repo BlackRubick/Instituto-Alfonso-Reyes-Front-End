@@ -78,6 +78,8 @@ const targetRoute =
             ? '/metrics/jefe'
             : data.user.rol === 'director'
               ? '/metrics/director'
+              : data.user.rol === 'asesor_academico'
+                ? '/asesor'
               : '/';
 
       await Swal.fire({

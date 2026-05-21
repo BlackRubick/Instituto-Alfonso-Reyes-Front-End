@@ -21,22 +21,22 @@ const FORM_INICIAL = SECCIONES.reduce((acc, s) => ({ ...acc, [s.key]: '' }), { t
 const GRUPOS = [
   {
     titulo: 'Identificación',
-    icon: '🎓',
+    icon: '',
     keys: ['denominacion', 'ciclo_escolar', 'clave_asignatura'],
   },
   {
     titulo: 'Estructura académica',
-    icon: '📚',
+    icon: '',
     keys: ['fines_aprendizaje', 'contenido_tematico'],
   },
   {
     titulo: 'Actividades',
-    icon: '✏️',
+    icon: '',
     keys: ['actividades_conduccion', 'actividades_independientes'],
   },
   {
     titulo: 'Evaluación y tecnología',
-    icon: '📊',
+    icon: '',
     keys: ['criterios_evaluacion', 'modalidades_tecnologicas'],
   },
 ];

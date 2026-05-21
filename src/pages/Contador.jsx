@@ -104,7 +104,7 @@ function formatDate(value) {
   return value;
 }
 
-export default function Contador() {
+export default function Contador({ allowedRole = 'contador' }) {
   const navigate = useNavigate();
   const printAreaRef = useRef();
 
@@ -157,7 +157,7 @@ export default function Contador() {
   useEffect(() => {
     try {
       const user = JSON.parse(localStorage.getItem('iar_user') || 'null');
-      if (!user || user.rol !== 'contador') {
+      if (!user || user.rol !== allowedRole) {
         navigate('/no-encontrada');
         return;
       }
@@ -223,7 +223,7 @@ export default function Contador() {
 
   async function loadEstudiantes() {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/users`, { headers: getAuthHeaders() });
+      const res = await fetch(`${API_BASE_URL}/api/users/estudiantes`, { headers: getAuthHeaders() });
       const data = await res.json();
       if (res.ok) {
         // Filtrar solo los que tengan rol 'estudiante'

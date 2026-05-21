@@ -10,12 +10,12 @@ import {
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
 const CATEGORIAS = [
-  { key: 'uniformes',          label: 'Uniformes',        icon: '👕' },
-  { key: 'examenes',           label: 'Exámenes',         icon: '📝' },
-  { key: 'inscripciones',      label: 'Inscripciones',    icon: '✍️' },
-  { key: 'reinscripciones',    label: 'Reinscripciones',  icon: '🔄' },
-  { key: 'practicas',          label: 'Prác. clínicas',   icon: '🩺' },
-  { key: 'credenciales',       label: 'Credenciales',     icon: '🪪' },
+  { key: 'uniformes',          label: 'Uniformes',         },
+  { key: 'examenes',           label: 'Exámenes',         icon: '' },
+  { key: 'inscripciones',      label: 'Inscripciones',    icon: '' },
+  { key: 'reinscripciones',    label: 'Reinscripciones',  icon: '' },
+  { key: 'practicas',          label: 'Prác. clínicas',   icon: '' },
+  { key: 'credenciales',       label: 'Credenciales',     icon: '' },
 ];
 
 // Paleta usando los colores del proyecto
@@ -71,15 +71,20 @@ export default function JefeMetrics() {
     navigate('/login_docentes', { replace: true });
   }
 
-  const total = metrics ? CATEGORIAS.reduce((s, c) => s + (metrics[c.key] || 0), 0) : 0;
+  const safeVal = (k) => {
+    const v = metrics && typeof metrics[k] !== 'undefined' ? metrics[k] : 0;
+    return Number(v) || 0;
+  };
+
+  const total = metrics ? CATEGORIAS.reduce((s, c) => s + safeVal(c.key), 0) : 0;
 
   const barData = metrics ? CATEGORIAS.map(c => ({
     name: c.label,
-    value: metrics[c.key] || 0,
+    value: safeVal(c.key),
   })) : [];
 
   const pieData = metrics ? CATEGORIAS
-    .map((c, i) => ({ name: c.label, value: metrics[c.key] || 0, color: COLORS[i] }))
+    .map((c, i) => ({ name: c.label, value: safeVal(c.key), color: COLORS[i] }))
     .filter(d => d.value > 0) : [];
 
   const pct = v => total > 0 ? ((v / total) * 100).toFixed(1) : '0.0';
@@ -288,15 +293,7 @@ export default function JefeMetrics() {
                       return (
                         <tr key={c.key} className="hover:bg-neutral-light/50 transition-colors">
                           <td className="px-5 py-3.5">
-                            <div className="flex items-center gap-3">
-                              <span
-                                className="w-8 h-8 rounded-lg flex items-center justify-center text-sm flex-shrink-0"
-                                style={{ background: COLORS[i] + '18' }}
-                              >
-                                {c.icon}
-                              </span>
-                              <span className="text-sm font-semibold text-neutral-dark">{c.label}</span>
-                            </div>
+                            <span className="text-sm font-semibold text-neutral-dark">{c.label}</span>
                           </td>
                           <td className="px-5 py-3.5 text-right">
                             <span className="text-sm font-bold text-neutral-dark">{fmt(val)}</span>

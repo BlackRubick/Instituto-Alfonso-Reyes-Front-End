@@ -10,3 +10,4 @@ export { ContactPreview } from './ContactPreview';
 export { FAQSection } from './FAQSection';
 export { RoleLoginForm } from './RoleLoginForm';
 export { Footer } from './Footer';
+export { InternalNavbar } from './InternalNavbar';

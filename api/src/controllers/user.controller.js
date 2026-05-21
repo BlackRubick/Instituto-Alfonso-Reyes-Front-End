@@ -96,6 +96,14 @@ export const getDocentes = asyncHandler(async (req, res) => {
   });
 });
 
+export const getEstudiantes = asyncHandler(async (req, res) => {
+  const users = await findUsuariosByRole('estudiante');
+
+  res.json({
+    users: users.map(serializeUser)
+  });
+});
+
 export const getUserById = asyncHandler(async (req, res) => {
   const id = validateIdParam(req.params.id);
   const user = await findUsuarioById(id);
@@ -120,13 +128,27 @@ export const getProfile = asyncHandler(async (req, res) => {
 export const createUser = asyncHandler(async (req, res) => {
   const { nombre, apellido, correo_electronico, contrasena, rol } = req.body;
 
-  requireFields(req.body, ['nombre', 'apellido', 'correo_electronico', 'contrasena', 'rol']);
+  // If the requester is asesor_academico, allow creation but only for estudiantes
+  const requesterRole = req.user?.rol;
+
+  // Required fields differ depending on requester
+  if (requesterRole === 'asesor_academico') {
+    requireFields(req.body, ['nombre', 'apellido', 'correo_electronico', 'contrasena']);
+  } else {
+    requireFields(req.body, ['nombre', 'apellido', 'correo_electronico', 'contrasena', 'rol']);
+  }
 
   const normalizedEmail = String(correo_electronico).trim().toLowerCase();
-  const normalizedRole = normalizeRole(rol);
 
-  if (!isAllowedRole(normalizedRole)) {
-    throw new AppError(400, 'El rol enviado no es válido.');
+  // Determine role to create: if asesor_academico forcing 'estudiante', otherwise use provided rol
+  let normalizedRole;
+  if (requesterRole === 'asesor_academico') {
+    normalizedRole = 'estudiante';
+  } else {
+    normalizedRole = normalizeRole(rol);
+    if (!isAllowedRole(normalizedRole)) {
+      throw new AppError(400, 'El rol enviado no es válido.');
+    }
   }
 
   await ensureUniqueEmail(normalizedEmail);
@@ -161,6 +183,11 @@ export const updateUser = asyncHandler(async (req, res) => {
     throw new AppError(404, 'Usuario no encontrado.');
   }
 
+  const requesterRole = req.user?.rol;
+  if (requesterRole === 'asesor_academico' && existingUser.rol !== 'estudiante') {
+    throw new AppError(403, 'Solo puedes modificar usuarios con rol estudiante.');
+  }
+
   const changes = {};
 
   if (typeof req.body.nombre !== 'undefined') {
@@ -186,6 +213,10 @@ export const updateUser = asyncHandler(async (req, res) => {
   }
 
   if (typeof req.body.rol !== 'undefined') {
+    if (requesterRole === 'asesor_academico') {
+      throw new AppError(403, 'No puedes modificar el rol de un alumno.');
+    }
+
     const normalizedRole = normalizeRole(req.body.rol);
 
     if (!isAllowedRole(normalizedRole)) {
@@ -218,6 +249,17 @@ export const updateUser = asyncHandler(async (req, res) => {
 
 export const deleteUser = asyncHandler(async (req, res) => {
   const id = validateIdParam(req.params.id);
+  const requesterRole = req.user?.rol;
+  const existingUser = await findUsuarioById(id);
+
+  if (!existingUser) {
+    throw new AppError(404, 'Usuario no encontrado.');
+  }
+
+  if (requesterRole === 'asesor_academico' && existingUser.rol !== 'estudiante') {
+    throw new AppError(403, 'Solo puedes eliminar usuarios con rol estudiante.');
+  }
+
   const deleted = await deleteUsuario(id);
 
   if (!deleted) {

@@ -16,7 +16,8 @@ import {
   AdminUsuarios,
   JefeMetrics,
   DirectorMetrics,
-  Contador
+  Contador,
+  Asesor
 } from './pages';
 
 function NotFoundPage() {
@@ -95,10 +96,11 @@ function App() {
                 <Route path="/faq" element={<FAQ />} />
                 <Route path="/contacto" element={<Contacto />} />
                 <Route path="/aviso-privacidad" element={<AvisoPrivacidad />} />
-                <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminUsuarios /></ProtectedRoute>} />
-                <Route path="/docentes" element={<ProtectedRoute allowedRoles={['profesor']}><Docentes /></ProtectedRoute>} />
-                <Route path="/coordinador/*" element={<ProtectedRoute allowedRoles={['coordinadora']}><Coordinador /></ProtectedRoute>} />
-                <Route path="/contador/*" element={<ProtectedRoute allowedRoles={['contador']}><Contador /></ProtectedRoute>} />
+                <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin', 'jefe', 'director']}><AdminUsuarios /></ProtectedRoute>} />
+                <Route path="/docentes" element={<ProtectedRoute allowedRoles={['profesor', 'jefe', 'director']}><Docentes /></ProtectedRoute>} />
+                <Route path="/coordinador/*" element={<ProtectedRoute allowedRoles={['coordinadora', 'jefe', 'director']}><Coordinador /></ProtectedRoute>} />
+                <Route path="/contador/*" element={<ProtectedRoute allowedRoles={['contador', 'jefe', 'director']}><Contador /></ProtectedRoute>} />
+                <Route path="/asesor" element={<ProtectedRoute allowedRoles={['asesor_academico', 'jefe', 'director']}><Asesor /></ProtectedRoute>} />
                 <Route path="/metrics/jefe" element={<ProtectedRoute allowedRoles={['admin','jefe','director']}><JefeMetrics /></ProtectedRoute>} />
                 <Route path="/metrics/director" element={<ProtectedRoute allowedRoles={['admin','director']}><DirectorMetrics /></ProtectedRoute>} />
                 <Route path="/no-encontrada" element={<NotFoundPage />} />
